@@ -24,7 +24,7 @@ put.communicate()
 
 print "Parsing"
 strlen = spark.udf.register("stringLengthString", lambda x: len(x))
-p = re.compile("[^EUIOAeuioaуеыаоэяию]")
+p = re.compile("[^EUIOAeuioaУЕЫАОЭЯИЮЁуеыаоэяиюё]")
 strvowels = spark.udf.register("stringVowels", lambda x: p.sub("",x.lower()))
 textFile = spark.read.text("/in/sample.txt")
 result = textFile.select(explode(split(textFile.value,"\s+"))).where("stringLengthString(stringVowels(col)) >= 2").count()
