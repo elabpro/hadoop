@@ -22,58 +22,116 @@
 
             <div class="slides">
                 <section>
-<h2>Creating Hadoop Cluster with Spark</h2>
-<h4>using Vagrant, Ansible</h4>
-<h6>2018, Eugene Arbatsky</h6>
+                    <h2>Creating Hadoop Cluster with Spark</h2>
+                    <h4>using Vagrant, Ansible</h4>
+                    <h6>2018, Eugene Arbatsky</h6>
+                </section>
+                <section>
+                    You'd get such results if you will try to find prepared files for creating such cluster
+                    <img src="images/github01.png" />
+                </section>
+                <section>
+                    or like this... Everything is outdated
+                    <img src="images/github02.png" />
+                </section>
+                <section>
+                    But we can try to use it as example. I took <a href="https://github.com/cybermaster/hadoop-spark-vagrant-ansible">this repository (Hadoop-Spark-vagrant-ansible)</a>
+                    <img src="images/github03.png" />
+                </section>
+                <section>
+                    vagrant up (Check Vagrantfile and make needed changes)
+                    <img src="images/vagrant01.png" />
+                </section>
+                <section>
+                    vagrant up (Create VMs and run them)
+                    <img src="images/vagrant02.png" />
+                </section>
+                <section>
+                    vagrant up (You can check states in VirtualBox)
+                    <img src="images/vb01.png" />
+                </section>
+                <section>
+                    Create cluster by using ansible
+                    <img src="images/ansible01.png" />
+                </section>
+                <section>
+                    Define slaves in etc/hadoop/slaves
+                    <pre>
+vagrant@hadoopmaster:/usr/local/hadoop-2.9.1$ cat etc/hadoop/slaves 
+192.168.50.11
+192.168.50.12
+192.168.50.13
+192.168.50.14
+                    </pre>
+                </section>
+                <section>
+                    Starting cluster
+                    <img src="images/cluster01.png" />
+                </section>
+                <section>
+                    Steps to create a cluster:<br />
+                    <ol>
+                        <li>Clone the repository</li>
+                        <li>cd cluster/</li>
+                        <li>vagrant up</li>
+                        <li>sh install_getfiles.sh</li>
+                        <li>ansible-playbook -i inventory/vagrant-4hosts.inv playbooks/hadoop.yml</li>
+                        <li>ssh -i ~/.vagrant.d/insecure_private_key vagrant@192.168.50.11</li>
+                        <li>vm# cd $HADOOP_INSTALL</li>
+                        <li>vm# sbin/start-all.sh</li>
+                    </ol>
+                </section>
+                <section>
+                    Our architecture<br />
+                    <img src="images/net01.png" />
+                </section>
+                <section>
+<h1>Testing cluster</h1>
 </section>
-<section>
-You'd get such results if you will try to find prepared files for creating such cluster
-<img src="images/github01.png" />
-</section>
-<section>
-or like this... Everything is outdated
-<img src="images/github02.png" />
-</section>
-<section>
-But we can try to use it as example. I took <a href="https://github.com/cybermaster/hadoop-spark-vagrant-ansible">this repository (Hadoop-Spark-vagrant-ansible)</a>
-<img src="images/github03.png" />
-</section>
-<section>
-vagrant up (Check Vagrantfile and make needed changes)
-<img src="images/vagrant01.png" />
-</section>
-<section>
-vagrant up (Create VMs and run them)
-<img src="images/vagrant02.png" />
-</section>
-<section>
-vagrant up (You can check states in VirtualBox)
-<img src="images/vb01.png" />
-</section>
-<section>
-create cluster by using ansible
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-Steps to create cluster:<br />
+                <section>
+Test Hadoop<br />
 <ol>
-<li>Clone the repository</li>
-<li>cd [dir]</li>
-<li>vagrant up</li>
-<li>ansible-playbook -i inventory/vagrant-4hosts.inv playbooks/hadoop.yml</li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
+<li>Prepare hdfs: bin/hdfs namenode -format</li>
+<li>Cleate input dir for data: bin/hdfs dfs -mkdir /in</li>
+<li>Put some info in it: bin/hdfs dfs -copyFromLocal /home/vagrant/books/* /in</li>
+<li>Run example: bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.9.1.jar wordcount /in /out</li>
+<li>See results: bin/hdfs dfs -ls /out</li>
+<li>Remove results: bin/hdfs dfs -rm -R /out</li>
 </ol>
 </section>
+                <section>
+You can see the cluster at work in browser (<a href="http://192.168.50.11:8088/cluster/apps">http://192.168.50.11:8088/cluster/apps</a>)<br />
+<img src="images/cluster02.png" />
+</section>
+                <section>
+Test Spark (in Scala)<br />
+<ol>
+<li>vm# spark-shell</li>
+<li>ss# var input = spark.read.textFile("/in/somefile.txt")</li>
+<li>ss# input.filter(line => line.length()>0).count()</li>
+</ol>
+<img src="images/scala01.png" />
+</section>
+                <section>
+Test Spark (in Scala)<br />
+<img src="images/scala02.png" />
+</section>
+                <section>
+<h1>Test task</h1>
+Calculate words with 2 and more vowels in an online book
+</section>
+                <section></section>
+                <section></section>
+                <section>
+                    Usefull links:<br />
+                    <ol>
+                        <li><a href="https://www.linode.com/docs/databases/hadoop/how-to-install-and-set-up-hadoop-cluster/">How to Install and Set Up a 3-Node Hadoop Cluster</a></li>
+                        <li><a href="https://habr.com/post/206196/">Настройка маленького кластера Hadoop 2.2.0 с нуля</a></li>
+                        <li><a href="https://github.com/cybermaster/hadoop-spark-vagrant-ansible">Hadoop-Spark-vagrant-ansible</a></li>
+                        <li><a href="http://192.168.50.11:8088/cluster/apps">Your cluster</a></li>
+                        <li><a href=""></a></li>
+                    </ol>
+                </section>
             </div>
             <script src="https://revealjs.com/lib/js/head.min.js"></script>
             <script src="https://revealjs.com/js/reveal.js"></script>
