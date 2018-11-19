@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="Hadoom cluster">
+        <meta name="author" content="Eugene Arbatsky">
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="https://revealjs.com/css/reveal.css">
+        <link rel="stylesheet" href="https://revealjs.com/css/theme/black.css" id="theme">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="https://revealjs.com/lib/css/zenburn.css">
+    </head>
+    <body>
+        <div class="reveal">
+
+            <div class="slides">
+                <section>
+<h2>Creating Hadoop Cluster with Spark</h2>
+<h4>using Vagrant, Ansible</h4>
+<h6>2018, Eugene Arbatsky</h6>
+</section>
+<section>
+You'd get such results if you will try to find prepared files for creating such cluster
+<img src="images/github01.png" />
+</section>
+<section>
+or like this... Everything is outdated
+<img src="images/github02.png" />
+</section>
+<section>
+But we can try to use it as example. I took <a href="https://github.com/cybermaster/hadoop-spark-vagrant-ansible">this repository (Hadoop-Spark-vagrant-ansible)</a>
+<img src="images/github03.png" />
+</section>
+<section>
+
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+            </div>
+            <script src="https://revealjs.com/lib/js/head.min.js"></script>
+            <script src="https://revealjs.com/js/reveal.js"></script>
+            <script>
+
+// More info https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+    controls: true,
+    progress: true,
+    history: true,
+    center: true,
+
+    transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+    // More info https://github.com/hakimel/reveal.js#dependencies
+    dependencies: [
+    { src: 'https://revealjs.com/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+    { src: 'https://revealjs.com/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+    { src: 'https://revealjs.com/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+    { src: 'https://revealjs.com/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+    { src: 'https://revealjs.com/plugin/search/search.js', async: true },
+    { src: 'https://revealjs.com/plugin/zoom-js/zoom.js', async: true },
+    { src: 'https://revealjs.com/plugin/notes/notes.js', async: true }
+    ]
+});
+
+            </script>
+
+    </body>
+</html>
