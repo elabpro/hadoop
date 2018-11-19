@@ -155,9 +155,17 @@ vm# pyspark
                 <section>4. Starting task<br />
                     <pre>
 >>> textFile = spark.read.text("/in/sample.txt")
->>> textFile.select(explode(split(textFile.value,"\s+"))).where("stringLengthString(stringVowels(col)) >= 2").count()
+>>> textFile.select(explode(split(textFile.value,"\s+")))
+            .where("stringLengthString(stringVowels(col)) >= 2").count()
                     </pre>
                     <img src="images/spark05.png" />
+                </section>
+                <section>
+5. Executing as a spark job<br />
+<pre>
+spark-submit  ~/calc.py
+</pre>
+<img src="images/spark06.png" />
                 </section>
                 <section>
                     Usefull links:<br />
