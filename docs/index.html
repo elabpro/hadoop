@@ -86,42 +86,79 @@ vagrant@hadoopmaster:/usr/local/hadoop-2.9.1$ cat etc/hadoop/slaves
                     <img src="images/net01.png" />
                 </section>
                 <section>
-<h1>Testing cluster</h1>
-</section>
+                    <h1>Testing cluster</h1>
+                </section>
                 <section>
-Test Hadoop<br />
-<ol>
-<li>Prepare hdfs: bin/hdfs namenode -format</li>
-<li>Cleate input dir for data: bin/hdfs dfs -mkdir /in</li>
-<li>Put some info in it: bin/hdfs dfs -copyFromLocal /home/vagrant/books/* /in</li>
-<li>Run example: bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.9.1.jar wordcount /in /out</li>
-<li>See results: bin/hdfs dfs -ls /out</li>
-<li>Remove results: bin/hdfs dfs -rm -R /out</li>
-</ol>
-</section>
+                    Test Hadoop<br />
+                    <ol>
+                        <li>Prepare hdfs: bin/hdfs namenode -format</li>
+                        <li>Cleate input dir for data: bin/hdfs dfs -mkdir /in</li>
+                        <li>Put some info in it: bin/hdfs dfs -copyFromLocal /home/vagrant/books/* /in</li>
+                        <li>Run example: bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.9.1.jar wordcount /in /out</li>
+                        <li>See results: bin/hdfs dfs -ls /out</li>
+                        <li>Remove results: bin/hdfs dfs -rm -R /out</li>
+                    </ol>
+                </section>
                 <section>
-You can see the cluster at work in browser (<a href="http://192.168.50.11:8088/cluster/apps">http://192.168.50.11:8088/cluster/apps</a>)<br />
-<img src="images/cluster02.png" />
-</section>
+                    You can see the cluster at work in browser (<a href="http://192.168.50.11:8088/cluster/apps">http://192.168.50.11:8088/cluster/apps</a>)<br />
+                    <img src="images/cluster02.png" />
+                </section>
                 <section>
-Test Spark (in Scala)<br />
-<ol>
-<li>vm# spark-shell</li>
-<li>ss# var input = spark.read.textFile("/in/somefile.txt")</li>
-<li>ss# input.filter(line => line.length()>0).count()</li>
-</ol>
-<img src="images/scala01.png" />
-</section>
+                    Test Spark (in Scala)<br />
+                    <ol>
+                        <li>vm# spark-shell</li>
+                        <li>ss# var input = spark.read.textFile("/in/somefile.txt")</li>
+                        <li>ss# input.filter(line => line.length()>0).count()</li>
+                    </ol>
+                    <img src="images/spark01.png" />
+                </section>
                 <section>
-Test Spark (in Scala)<br />
-<img src="images/scala02.png" />
-</section>
+                    Test Spark (in Scala)<br />
+                    <img src="images/spark02.png" />
+                </section>
                 <section>
-<h1>Test task</h1>
-Calculate words with 2 and more vowels in an online book
-</section>
-                <section></section>
-                <section></section>
+                    <h1>Test task</h1>
+                    Calculate words with 2 and more vowels in an online book
+                </section>
+                <section>
+                    Getting a book<br />
+                    1. We can't get online resource and put in cluster. So let's download it in temporary file<br />
+                    <pre>
+vm# pyspark
+>>> import urllib2
+>>> response = urllib2.urlopen("http://www.gutenberg.org/files/36/36-0.txt") 
+>>> data = response.read()
+>>> f_ = open("/tmp/test.txt","w")
+>>> f_.write(data)
+>>> f_.close()
+                    </pre>
+                </section>
+                <section>
+                    2. Put the book in hdfs<br />
+                    <pre>
+>>> from subprocess import PIPE, Popen
+>>> put = Popen(["hadoop", "fs", "-put", "/tmp/test.txt", "/in/sample.txt"], stdin=PIPE, bufsize=-1)
+>>> put.communicate()
+                    </pre>
+                    <img src="images/spark03.png" />
+                </section>
+                <section>3. Prepare parsers and function<br />
+                    <pre>
+>>> from pyspark.sql.functions import *
+>>> import re
+>>> strlen = spark.udf.register("stringLengthString", lambda x: len(x))
+>>> p = re.compile("[^EUIOAeuioaуеыаоэяию]")
+>>> strvowels = spark.udf.register("stringVowels", lambda x: p.sub("",x.lower()))
+                    </pre>
+                    <img src="images/spark04.png" />
+                </section>
+                <section>4. Starting task<br />
+                    <pre>
+>>> textFile = spark.read.text("/in/sample.txt")
+>>> textFile.select(explode(split(textFile.value,"\s+"))).where("stringLengthString(stringVowels(col)) >= 2").count()
+                    </pre>
+                    <img src="images/spark05.png" />
+                </section>
                 <section>
                     Usefull links:<br />
                     <ol>
@@ -129,7 +166,7 @@ Calculate words with 2 and more vowels in an online book
                         <li><a href="https://habr.com/post/206196/">Настройка маленького кластера Hadoop 2.2.0 с нуля</a></li>
                         <li><a href="https://github.com/cybermaster/hadoop-spark-vagrant-ansible">Hadoop-Spark-vagrant-ansible</a></li>
                         <li><a href="http://192.168.50.11:8088/cluster/apps">Your cluster</a></li>
-                        <li><a href=""></a></li>
+                        <li><a href="https://www.linode.com/docs/databases/hadoop/install-configure-run-spark-on-top-of-hadoop-yarn-cluster/">Install, Configure, and Run Spark on Top of a Hadoop YARN Cluster</a></li>
                     </ol>
                 </section>
             </div>
