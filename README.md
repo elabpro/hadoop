@@ -25,7 +25,7 @@ Spark job for counting words with 2 and more vowels https://github.com/elabpro/h
  -   See results: bin/hdfs dfs -ls /out
  -   Remove results: bin/hdfs dfs -rm -R /out
 
-# How to test Spark claster
+# How to test Spark cluster
 
  -   vm# spark-shell
  -   ss# var input = spark.read.textFile("/in/somefile.txt")
